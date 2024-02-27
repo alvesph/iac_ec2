@@ -40,6 +40,17 @@ resource "aws_subnet" "impact-c" {
   }
 }
 
+resource "aws_db_subnet_group" "db_subnet_group" {
+  name        = "db-subnet-group"
+  description = "Subnet group for RDS in homolog environment"
+
+  subnet_ids = [
+    aws_subnet.impact-a.id,
+    aws_subnet.impact-b.id,
+    aws_subnet.impact-c.id,
+  ]
+}
+
 resource "aws_internet_gateway" "igw_main" {
   vpc_id = aws_vpc.vpc-main.id
 
@@ -126,4 +137,12 @@ resource "aws_security_group" "rds_postgres_sg" {
   tags = {
     Name = "rds_postgres_sg"
   }
+}
+
+output "db_subnet_group_name" {
+  value = aws_db_subnet_group.db_subnet_group.name
+}
+
+output "rds_postgres_sg_id" {
+  value = aws_security_group.rds_postgres_sg.id
 }
