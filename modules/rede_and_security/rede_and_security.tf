@@ -146,3 +146,7 @@ output "db_subnet_group_name" {
 output "rds_postgres_sg_id" {
   value = aws_security_group.rds_postgres_sg.id
 }
+
+output "application_sg_id" {
+  value = aws_security_group.application_sg.id
+}

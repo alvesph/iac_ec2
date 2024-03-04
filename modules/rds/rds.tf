@@ -18,4 +18,8 @@ resource "aws_db_instance" "db-impact" {
   db_subnet_group_name                  = var.db_subnet_group_name
   vpc_security_group_ids                = var.vpc_security_group_ids
   # enabled_cloudwatch_logs_exports       = ["postgresql", "upgrade"]
+
+  tags = {
+    Name = "RDS postgres"
+  }
 }
