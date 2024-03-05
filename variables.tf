@@ -22,6 +22,10 @@ variable "password_db" {
   type = string
 }
 
+variable "name_db" {
+  type = string
+}
+
 variable "access_key" {
   type = string
 }

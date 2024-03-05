@@ -5,7 +5,7 @@ resource "aws_db_instance" "db-impact" {
   engine                       = "postgres"
   engine_version               = "15.6"
   instance_class               = var.instance_type
-  db_name                      = "impact"
+  db_name                      = var.name_db
   username                     = var.username_db
   password                     = var.password_db
   port                         = "5432"
