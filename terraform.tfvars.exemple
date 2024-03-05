@@ -1,0 +1,18 @@
+region = "us-east-1"
+
+access_key = ""
+secret_key = ""
+
+tags = {
+  Owner    = ""
+  Projeto  = ""
+  Ambiente = ""
+}
+#SECURITY_AND_NETWORK
+allowed_ips = ["128.0.0.1/32"]
+
+#RDS
+instance_type = ""
+username_db   = ""
+password_db   = ""
+name_db       = ""
