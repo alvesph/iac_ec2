@@ -1,6 +1,6 @@
 resource "aws_db_instance" "db-impact" {
   identifier                   = "db-impact"
-  allocated_storage            = 100
+  allocated_storage            = 50
   # iops                         = 1000
   engine                       = "postgres"
   engine_version               = "15.6"

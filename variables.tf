@@ -21,3 +21,10 @@ variable "username_db" {
 variable "password_db" {
   type = string
 }
+
+variable "access_key" {
+  type = string
+}
+variable "secret_key" {
+  type = string
+}
