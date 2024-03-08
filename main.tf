@@ -22,4 +22,5 @@ module "rds" {
 module "ec2" {
   source                 = "./modules/ec2"
   vpc_security_group_ids = [module.rede_and_security.application_sg_id]
+  subnet_id              = module.rede_and_security.subnet_impact_a_id
 }

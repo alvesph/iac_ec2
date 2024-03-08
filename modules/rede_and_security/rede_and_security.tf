@@ -20,7 +20,7 @@ resource "aws_subnet" "impact-a" {
 
 resource "aws_subnet" "impact-b" {
   vpc_id                  = aws_vpc.vpc-main.id
-  cidr_block              = "10.0.1.0/24"
+  cidr_block              = "10.0.2.0/24"
   availability_zone       = "us-east-1b"
   map_public_ip_on_launch = false
 
@@ -31,7 +31,7 @@ resource "aws_subnet" "impact-b" {
 
 resource "aws_subnet" "impact-c" {
   vpc_id                  = aws_vpc.vpc-main.id
-  cidr_block              = "10.0.1.0/24"
+  cidr_block              = "10.0.3.0/24"
   availability_zone       = "us-east-1c"
   map_public_ip_on_launch = false
 
@@ -149,4 +149,8 @@ output "rds_postgres_sg_id" {
 
 output "application_sg_id" {
   value = aws_security_group.application_sg.id
+}
+
+output "subnet_impact_a_id" {
+  value = aws_subnet.impact-a.id
 }
