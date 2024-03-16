@@ -9,3 +9,7 @@ variable "subnet_id" {
 variable "key_name" {
   description = "impact_ssh"
 }
+
+variable "instance_type_name" {
+  description = "Name fo ec2 instance"
+}

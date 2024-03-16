@@ -36,3 +36,11 @@ variable "secret_key" {
 variable "key_name" {
   type = string
 }
+
+variable "project_name" {
+  type = string
+}
+
+variable "instance_type_name" {
+  type = string
+}

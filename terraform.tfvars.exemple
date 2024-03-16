@@ -16,3 +16,10 @@ instance_type = ""
 username_db   = ""
 password_db   = ""
 name_db       = ""
+
+key_name = ""
+
+#EC2
+instance_type_name = ""
+
+project_name = ""
