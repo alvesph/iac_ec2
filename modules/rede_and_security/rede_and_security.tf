@@ -11,7 +11,7 @@ resource "aws_subnet" "impact-a" {
   vpc_id                  = aws_vpc.vpc-main.id
   cidr_block              = "10.0.1.0/24"
   availability_zone       = "us-east-1a"
-  map_public_ip_on_launch = false
+  map_public_ip_on_launch = true
 
   tags = {
     Name = "impact-a"
@@ -22,7 +22,7 @@ resource "aws_subnet" "impact-b" {
   vpc_id                  = aws_vpc.vpc-main.id
   cidr_block              = "10.0.2.0/24"
   availability_zone       = "us-east-1b"
-  map_public_ip_on_launch = false
+  map_public_ip_on_launch = true
 
   tags = {
     Name = "impact-b"
@@ -33,45 +33,45 @@ resource "aws_subnet" "impact-c" {
   vpc_id                  = aws_vpc.vpc-main.id
   cidr_block              = "10.0.3.0/24"
   availability_zone       = "us-east-1c"
-  map_public_ip_on_launch = false
+  map_public_ip_on_launch = true
 
   tags = {
     Name = "impact-c"
   }
 }
 
-resource "aws_subnet" "impact-a-public" {
-  vpc_id                  = aws_vpc.vpc-main.id
-  cidr_block              = "10.0.4.0/24"
-  availability_zone       = "us-east-1a"
-  map_public_ip_on_launch = true
+# resource "aws_subnet" "impact-a-public" {
+#   vpc_id                  = aws_vpc.vpc-main.id
+#   cidr_block              = "10.0.4.0/24"
+#   availability_zone       = "us-east-1a"
+#   map_public_ip_on_launch = true
 
-  tags = {
-    Name = "public-a"
-  }
-}
+#   tags = {
+#     Name = "public-a"
+#   }
+# }
 
-resource "aws_subnet" "impact-b-public" {
-  vpc_id                  = aws_vpc.vpc-main.id
-  cidr_block              = "10.0.5.0/24"
-  availability_zone       = "us-east-1b"
-  map_public_ip_on_launch = true
+# resource "aws_subnet" "impact-b-public" {
+#   vpc_id                  = aws_vpc.vpc-main.id
+#   cidr_block              = "10.0.5.0/24"
+#   availability_zone       = "us-east-1b"
+#   map_public_ip_on_launch = true
 
-  tags = {
-    Name = "public-b"
-  }
-}
+#   tags = {
+#     Name = "public-b"
+#   }
+# }
 
-resource "aws_subnet" "impact-c-public" {
-  vpc_id                  = aws_vpc.vpc-main.id
-  cidr_block              = "10.0.6.0/24"
-  availability_zone       = "us-east-1c"
-  map_public_ip_on_launch = true
+# resource "aws_subnet" "impact-c-public" {
+#   vpc_id                  = aws_vpc.vpc-main.id
+#   cidr_block              = "10.0.6.0/24"
+#   availability_zone       = "us-east-1c"
+#   map_public_ip_on_launch = true
 
-  tags = {
-    Name = "public-c"
-  }
-}
+#   tags = {
+#     Name = "public-c"
+#   }
+# }
 resource "aws_db_subnet_group" "db_subnet_group" {
   name        = "db-subnet-group"
   description = "Subnet group for RDS in homolog environment"
@@ -105,6 +105,21 @@ resource "aws_route" "main_route" {
   gateway_id             = aws_internet_gateway.igw_main.id
 }
 
+resource "aws_route_table_association" "subnet_association_a" {
+  subnet_id      = aws_subnet.impact-a.id
+  route_table_id = aws_route_table.main_route_table.id
+}
+
+resource "aws_route_table_association" "subnet_association_b" {
+  subnet_id      = aws_subnet.impact-b.id
+  route_table_id = aws_route_table.main_route_table.id
+}
+
+resource "aws_route_table_association" "subnet_association_c" {
+  subnet_id      = aws_subnet.impact-c.id
+  route_table_id = aws_route_table.main_route_table.id
+}
+
 resource "aws_security_group" "application_sg" {
   vpc_id      = aws_vpc.vpc-main.id
   name        = "application"
@@ -132,34 +147,41 @@ resource "aws_security_group" "application_sg" {
 
     }
   }
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    description = "Outbound rules for applications"
+  }
 
   tags = {
     Name = "application_sg"
   }
 }
 
-resource "aws_security_group" "load_balancer_security_group" {
-  vpc_id = aws_vpc.vpc-main.id
+# resource "aws_security_group" "load_balancer_security_group" {
+#   vpc_id = aws_vpc.vpc-main.id
 
-  ingress {
-    from_port        = 80
-    to_port          = 80
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    description = "Inbound rules for loadbalancer"
-  }
+#   ingress {
+#     from_port        = 80
+#     to_port          = 80
+#     protocol         = "tcp"
+#     cidr_blocks      = ["0.0.0.0/0"]
+#     description = "Inbound rules for loadbalancer"
+#   }
 
-  egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    description = "Outbound rules for loadbalancer"
-  }
-  tags = {
-    Name        = "loadbalancer_sg"
-  }
-}
+#   egress {
+#     from_port        = 0
+#     to_port          = 0
+#     protocol         = "-1"
+#     cidr_blocks      = ["0.0.0.0/0"]
+#     description = "Outbound rules for loadbalancer"
+#   }
+#   tags = {
+#     Name        = "loadbalancer_sg"
+#   }
+# }
 
 resource "aws_security_group" "rds_postgres_sg" {
   vpc_id      = aws_vpc.vpc-main.id
@@ -188,6 +210,22 @@ resource "aws_security_group" "rds_postgres_sg" {
       description = "Allow access from My IP"
     }
   }
+
+  # ingress {
+  #   from_port        = 80
+  #   to_port          = 80
+  #   protocol         = "tcp"
+  #   cidr_blocks      = ["0.0.0.0/0"]
+  #   description = "Inbound rules for rds"
+  # }
+
+  # egress {
+  #   from_port        = 0
+  #   to_port          = 0
+  #   protocol         = "-1"
+  #   cidr_blocks      = ["0.0.0.0/0"]
+  #   description = "Outbound rules for rds"
+  # }
 
   tags = {
     Name = "rds_postgres_sg"
@@ -221,6 +259,6 @@ output "subnet_impact_c_id" {
   value = aws_subnet.impact-c.id
 }
 
-output "loadbalancer_sg_id" {
-  value = aws_security_group.load_balancer_security_group.id
-}
+# output "loadbalancer_sg_id" {
+#   value = aws_security_group.load_balancer_security_group.id
+# }
