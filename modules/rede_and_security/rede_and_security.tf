@@ -218,17 +218,17 @@ resource "aws_security_group" "rds_postgres_sg" {
       to_port     = 0
       protocol    = "-1"
       cidr_blocks = [ingress.value]
-      description = "Allow inbound all trafic from My IP"
+      description = "Allow inbound all traffic from My IP"
     }
   }
 
-  dynamic "engress" {
+  dynamic "egress" {
     for_each = var.allowed_ips
     content {
       from_port   = 0
       to_port     = 0
       protocol    = "-1"
-      cidr_blocks = [ingress.value]
+      cidr_blocks = [egress.value]
       description = "Allow outbound all trafic from My IP"
     }
   }
