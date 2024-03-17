@@ -211,22 +211,27 @@ resource "aws_security_group" "rds_postgres_sg" {
     }
   }
 
-  # ingress {
-  #   from_port        = 80
-  #   to_port          = 80
-  #   protocol         = "tcp"
-  #   cidr_blocks      = ["0.0.0.0/0"]
-  #   description = "Inbound rules for rds"
-  # }
+  dynamic "ingress" {
+    for_each = var.allowed_ips
+    content {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_blocks = [ingress.value]
+      description = "Allow inbound all trafic from My IP"
+    }
+  }
 
-  # egress {
-  #   from_port        = 0
-  #   to_port          = 0
-  #   protocol         = "-1"
-  #   cidr_blocks      = ["0.0.0.0/0"]
-  #   description = "Outbound rules for rds"
-  # }
-
+  dynamic "engress" {
+    for_each = var.allowed_ips
+    content {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_blocks = [ingress.value]
+      description = "Allow outbound all trafic from My IP"
+    }
+  }
   tags = {
     Name = "rds_postgres_sg"
   }
